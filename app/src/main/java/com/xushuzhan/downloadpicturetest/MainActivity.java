@@ -38,41 +38,38 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-
-
-        String savedFileName[]=getHashcode().clone();
-
-        if(savedFileName.length==0){
-            Thread run = new Thread(getUrlRunnable);
-            run.start();
-
-        }
         //测试的URL
         URL Turl = null;
         try {
             Turl = new URL("http://static.wgpet.com/editor/attached/image/20141126/20141126213121_26063.jpg");
-//            Turl = new URL("http://img2.imgtn.bdimg.com/it/u=1457437487,655486635&fm=11&gp=0.jpg");
 
         } catch (MalformedURLException e) {
             e.getMessage();
         }
         Turl.getHost().hashCode();
         System.out.println("这是测试连接的URL的hash码"+Turl.getHost().hashCode());
-        for(int i=0;i<savedFileName.length;i++){
-            if(String.valueOf(Turl.getHost().hashCode()).equals(savedFileName[i])){
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(PICTURE_PATH+savedFileName[i]);
-                } catch (FileNotFoundException e) {
-                    e.getMessage();
+
+       String savedFileName[]=getHashcode().clone();
+        if (savedFileName.length == 0) {
+            Thread run = new Thread(getUrlRunnable);
+            run.start();
+        } else {
+            for (int i = 0; i < savedFileName.length; i++) {
+                if (String.valueOf(Turl.getHost().hashCode()).equals(savedFileName[i])) {
+                    FileInputStream fis = null;
+                    try {
+                        fis = new FileInputStream(PICTURE_PATH + savedFileName[i]);
+                    } catch (FileNotFoundException e) {
+                        e.getMessage();
+                    }
+                    Bitmap bitmap = BitmapFactory.decodeStream(fis);
+                    picture.setImageBitmap(bitmap);
+                    System.out.println("本地图片》》》》》》》》》》》》》》》》》》》》》》》");
+                } else {
+                    System.out.println("本地没有这张图片23333333333333333333333333333333333");
+                    Thread run = new Thread(getUrlRunnable);
+                    run.start();
                 }
-                Bitmap bitmap=BitmapFactory.decodeStream(fis);
-                picture.setImageBitmap(bitmap);
-                System.out.println("本地图片》》》》》》》》》》》》》》》》》》》》》》》");
-            }else{
-                System.out.println("本地没有这张图片233333333333333333333333333333333333333333333333333333333333333333333333333333333");
-                Thread run = new Thread(getUrlRunnable);
-                run.start();
             }
         }
     }
@@ -94,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //让hanlder发送消息，通知UI更新
                 connectHanlder.sendEmptyMessage(0x123);
+
             } catch (IOException e) {
                 Toast.makeText(MainActivity.this,"无法连接网络",Toast.LENGTH_LONG).show();
                 e.printStackTrace();
